@@ -1,0 +1,268 @@
+<html>
+<head>
+   <script>
+      var currentID;
+      var moves = 0;
+      var moveSteps = 100;
+      var moveRate = 1;
+      var moveLeftCur = 100;
+      var moveUpCur = 100;
+      var text;
+      var index = 0;
+      var str = "";
+      var fontSizeSmall = 20;
+      var fontSizeBig = 10;
+      var resizeRate = 1;
+		var seconds = 0;
+		var minutes = 0;
+		var black = true;
+      var bgColor = "black";
+		var alarmColor = "#58002C";
+      var circleA = 200;
+      var circleB = 200;
+      var circleRadius = 50;
+      
+      function moveRightStart() {
+         currentID = "right";
+         moveRight();
+      }
+      function moveRight() {
+         if (moves < moveSteps) {
+            moves += moveRate;
+            getID(currentID).style.left = moves;
+            moveRightOn = setTimeout("moveRight()",5);
+         }
+         else {
+            clearTimeout(moveRightOn);
+            moves = 0;
+         }
+      }
+      function moveLeftStart() {
+         currentID = "left";
+         moveLeft();
+      }
+      function moveLeft() {
+         if (moveLeftCur > 0) {
+            moveLeftCur--;
+            getID(currentID).style.left = moveLeftCur;
+            moveLeftOn = setTimeout("moveLeft()",5);
+         }
+         else {
+            clearTimeout(moveLeftOn);
+            moveLeftCur = 100;
+         }
+      }
+      function moveUpStart() {
+         currentID = "up";
+         moveUp();
+      }
+      function moveUp() {
+         if (moveUpCur > 0) {
+            moveUpCur--;
+            getID(currentID).style.top = moveUpCur;
+            moveUpOn = setTimeout("moveUp()",5);
+         }
+         else {
+            clearTimeout(moveUpOn);
+            moveUpCur = 100;
+         }
+      }
+      function moveDownStart() {
+         currentID = "down";
+         moveDown();
+      }
+      function moveDown() {
+         if (moves < moveSteps) {
+            moves += moveRate;
+            getID(currentID).style.top = moves;
+            moveDownOn = setTimeout("moveDown()",5);
+         }
+         else {
+            clearTimeout(moveDownOn);
+            moves = 0;
+         }
+      }
+      function createStringStart() {
+         currentID = "create";
+         text = getID(currentID).innerHTML;
+         createString();
+      }
+      function createString() {
+         if (index < text.length) {
+            str += text.charAt(index);
+            getID(currentID).innerHTML = str;
+            index++;
+            createStringOn = setTimeout("createString()",50);
+         }
+         else {
+            clearTimeout(createStringOn);
+            index = 0;
+            str = "";
+         }
+      }
+      function resizeSmallStart() {
+	      currentID = "small";
+	      resizeSmall();
+      }
+      function resizeSmall() {
+         if (fontSizeSmall > 10) {
+            fontSizeSmall -= resizeRate;
+            getID(currentID).style.fontSize = fontSizeSmall;
+            resizeSmallOn = setTimeout("resizeSmall()",5);
+         }
+         else {
+            clearTimeout(resizeSmall);
+            fontSizeSmall = 30;
+         }
+      }
+		function resizeBigStart(id) {
+	      currentID = "big";
+	      resizeBig();
+      }
+      function resizeBig() {
+         if (fontSizeBig < 30) {
+            fontSizeBig += resizeRate;
+            getID(currentID).style.fontSize = fontSizeBig;
+            resizeBigOn = setTimeout("resizeBig()",5);
+         }
+         else {
+            clearTimeout(resizeBig);
+            fontSizeBig = 10;
+         }
+      }
+		function timerStart() {
+			hideID("startTimer");
+			showID("stopTimer");
+			timer();
+		}
+		function timer() {
+         if (seconds == 60) {
+            minutes++;
+            seconds = 0;
+         }
+         if (seconds < 10)
+            getID("time").innerHTML = minutes + ":0" + seconds;
+         else
+            getID("time").innerHTML = minutes + ":" + seconds;
+
+         seconds++;
+         timerOn = setTimeout("timer()",1000);
+			
+		}
+		function timerStop() {
+			clearTimeout(timerOn);
+			seconds = 0;
+			minutes = 0;
+			hideID("stopTimer");
+			showID("startTimer");
+			getID("time").innerHTML = "";
+		}
+		function alarmStart() {
+         currentID = "body";
+         hideID("startAlarm");
+         showID("stopAlarm");
+         alarm();
+      }
+      function alarm() {
+         if (black) {
+				getID(currentID).style.backgroundColor = alarmColor;
+				black = false;
+			}
+			else {
+				getID(currentID).style.backgroundColor = bgColor;
+				black = true;
+			}
+			alarmOn = setTimeout("alarmStart()",500);
+		}
+		function alarmStop() {
+			clearTimeout(alarmOn);
+			black = true;
+			getID(currentID).style.backgroundColor = bgColor;
+         hideID("stopAlarm");
+         showID("startAlarm");
+		}
+      
+      // (x-a)2 + (y-b)2 = r2
+      function circle(step, quadrant) {
+         step = Number(step);
+         if (step < circleRadius && quadrant < 5) {
+            switch (quadrant) {
+               case "1":
+                  var x = step + circleA;
+                  var y = circleB - Math.sqrt(2500 - Math.pow(x - circleA, 2));
+                  break;
+               case "2":
+                  var x = circleA + circleRadius - step;
+                  var y = Math.sqrt(2500 - Math.pow(x - circleA, 2)) + circleB;
+                  break;
+               case "3":
+                  var x = circleA - step;
+                  var y = Math.sqrt(2500 - Math.pow(x - circleA, 2)) + circleB;
+                  break;
+               case "4":
+                  var x = circleA - circleRadius + step;
+                  var y = circleB - Math.sqrt(2500 - Math.pow(x - circleA, 2));
+                  break;
+               default:
+                  console.log("default");
+            }
+            var c = getID("circle");
+            c.style.left = x;
+            c.style.top = y;
+            step++;
+            var circleOn = setTimeout("circle('" + step + "','" + quadrant + "')",5);
+         }
+         else {
+            clearTimeout(circleOn);
+            if (quadrant < 5) {
+               quadrant++;
+               circle(0, quadrant.toString());
+            }
+            else 
+               circle(0, "1");
+         }
+      }
+      function getID(id) {
+         return document.getElementById(id);
+      }
+      function hideID(id) {
+         getID(id).style.display = "none";
+      }
+      function showID(id) {
+         getID(id).style.display = "block";
+      }
+      </script>
+   <style>
+      body {background-color:black;color:#009bd5;font-family:arial;font-size:14}
+      a {color:#009bd5;text-decoration:none}
+      #right {position:fixed;top:0;left:0}
+      #left {position:fixed;top:50;left:100}
+      #up {position:fixed;top:100;left:200}
+      #down {position:fixed;top:0;left:300}
+      #create {position:fixed;top:150;left:0}
+      #small {position:fixed;top:200;left:0;font-size:30}
+      #big {position:fixed;top:250;left:0;font-size:10}
+      #startTimer {position:fixed;top:300;left:0}
+      #stopTimer {position:fixed;top:300;left:0;display:none}
+      #time {position:fixed;top:325;left:10}
+      #startAlarm {position:fixed;top:350;left:0}
+      #stopAlarm {position:fixed;top:350;left:0;display:none}
+      #circle {position:fixed;top:150;left:200}
+   </style>
+</head>
+<body id="body">
+   <a id="right" href="javascript:moveRightStart()">move right</a>
+   <a id="left" href="javascript:moveLeftStart()">move left</a>
+   <a id="up" href="javascript:moveUpStart()">move up</a>
+   <a id="down" href="javascript:moveDownStart()">move down</a>
+   <a id="create" href="javascript:createStringStart()">create string...</a>
+   <a id="small" href="javascript:resizeSmallStart()">small</a>
+   <a id="big" href="javascript:resizeBigStart()">big</a>
+ 	<a id="startTimer" href="javascript:timerStart()">start timer</a>
+	<a id="stopTimer" href="javascript:timerStop()">stop timer</a>
+	<a id="time"></a>
+ 	<a id="startAlarm" href="javascript:alarmStart()">start alarm</a>
+	<a id="stopAlarm" href="javascript:alarmStop()">stop alarm</a>
+	<a id="circle" href="javascript:circle('0','1')"><img id="chicken" src="Capture.PNG"></a>
+</body>
+</html>
