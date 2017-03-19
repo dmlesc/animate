@@ -26,7 +26,7 @@ function moveRightStart() {
 function moveRight() {
   if (moves < moveSteps) {
     moves += moveRate;
-    getID(currentID).style.left = moves + "px";
+    setLeft(currentID, moves);
     moveRightOn = setTimeout("moveRight()", 5);
   }
   else {
@@ -41,7 +41,7 @@ function moveLeftStart() {
 function moveLeft() {
   if (moveLeftCur > 0) {
     moveLeftCur--;
-    getID(currentID).style.left = moveLeftCur + "px";
+    setLeft(currentID, moveLeftCur);
     moveLeftOn = setTimeout("moveLeft()", 5);
   }
   else {
@@ -56,7 +56,7 @@ function moveUpStart() {
 function moveUp() {
   if (moveUpCur > 0) {
     moveUpCur--;
-    getID(currentID).style.top = moveUpCur + "px";
+    setTop(currentID, moveUpCur);
     moveUpOn = setTimeout("moveUp()", 5);
   }
   else {
@@ -71,7 +71,7 @@ function moveDownStart() {
 function moveDown() {
   if (moves < moveSteps) {
     moves += moveRate;
-    getID(currentID).style.top = moves + "px";
+    setTop(currentID, moves);
     moveDownOn = setTimeout("moveDown()", 5);
   }
   else {
@@ -104,7 +104,7 @@ function resizeSmallStart() {
 function resizeSmall() {
   if (fontSizeSmall > 10) {
     fontSizeSmall -= resizeRate;
-    getID(currentID).style.fontSize = fontSizeSmall + "px";
+    setFont(currentID, fontSizeSmall);
     resizeSmallOn = setTimeout("resizeSmall()", 5);
   }
   else {
@@ -119,7 +119,7 @@ function resizeBigStart(id) {
 function resizeBig() {
   if (fontSizeBig < 30) {
     fontSizeBig += resizeRate;
-    getID(currentID).style.fontSize = fontSizeBig + "px";
+    setFont(currentID, fontSizeBig);
     resizeBigOn = setTimeout("resizeBig()", 5);
   }
   else {
@@ -138,9 +138,9 @@ function timer() {
     seconds = 0;
   }
   if (seconds < 10)
-    getID("time").innerHTML = minutes + ":0" + seconds;
+    setHTML("time", minutes + ":0" + seconds);
   else
-    getID("time").innerHTML = minutes + ":" + seconds;
+    setHTML("time", minutes + ":" + seconds);
 
   seconds++;
   timerOn = setTimeout("timer()",1000);
@@ -151,7 +151,7 @@ function timerStop() {
   minutes = 0;
   hideID("stopTimer");
   showID("startTimer");
-  getID("time").innerHTML = "";
+  setHTML("time", "");
 }
 function alarmStart() {
   currentID = "body";
@@ -161,11 +161,11 @@ function alarmStart() {
 }
 function alarm() {
   if (black) {
-    getID(currentID).style.backgroundColor = alarmColor;
+    setBgColor(currentID, alarmColor);
     black = false;
   }
   else {
-    getID(currentID).style.backgroundColor = bgColor;
+    setBgColor(currentID, bgColor);
     black = true;
   }
 
@@ -174,7 +174,7 @@ function alarm() {
 function alarmStop() {
   clearTimeout(alarmOn);
   black = true;
-  getID(currentID).style.backgroundColor = bgColor;
+  setBgColor(currentID, bgColor);
   hideID("stopAlarm");
   showID("startAlarm");
 }
@@ -219,12 +219,11 @@ function circle(step, quadrant) {
       circle(0, "1");
   }
 }
-function getID(id) {
-  return document.getElementById(id);
-}
-function hideID(id) {
-  getID(id).style.display = "none";
-}
-function showID(id) {
-  getID(id).style.display = "block";
-}
+function getID(id) { return document.getElementById(id); }
+function hideID(id) { getID(id).style.display = "none"; }
+function showID(id) { getID(id).style.display = "block"; }
+function setTop(id, val) { getID(id).style.top = val + "px"; }
+function setLeft(id, val) { getID(id).style.left = val + "px"; }
+function setFont(id, val) { getID(id).style.fontSize = val + "px"; }
+function setHTML(id, val) { getID(id).innerHTML = val; }
+function setBgColor(id, val) { getID(id).style.backgroundColor = val;}
